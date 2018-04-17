@@ -15,16 +15,6 @@ trait HasSettings
     protected $settings = null;
 
     /**
-<<<<<<< HEAD
-=======
-     * Registered settings for the subject.
-     *
-     * @var array
-     */
-    protected $registeredSettings = [];
-
-    /**
->>>>>>> c6f95d155da927aee1f054004d1da4c7d22819d5
      * A resource has many settings in a property bag.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
