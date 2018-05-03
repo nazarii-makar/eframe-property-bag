@@ -4,7 +4,6 @@ namespace EFrame\PropertyBag\Settings;
 
 use Illuminate\Database\Eloquent\Model;
 use EFrame\PropertyBag\Settings\Rules\RuleValidator;
-use EFrame\PropertyBag\Exceptions\InvalidSettingsValue;
 
 class Settings
 {
@@ -38,13 +37,6 @@ class Settings
     protected $settings;
 
     /**
-     * Validator for allowed rules.
-     *
-     * @var EFrame\PropertyBag\Settings\Rules\RuleValidator
-     */
-    protected $ruleValidator;
-
-    /**
      * Construct.
      *
      * @param ResourceConfig $settingsConfig
@@ -55,7 +47,6 @@ class Settings
         $this->settingsConfig = $settingsConfig;
         $this->resource = $resource;
 
-        $this->ruleValidator = new RuleValidator();
         $this->registered = $settingsConfig->registeredSettings();
 
         $this->sync();
@@ -101,30 +92,6 @@ class Settings
     public function isRegistered($key)
     {
         return $this->getRegistered()->has($key);
-    }
-
-    /**
-     * Return true if key and value are registered values.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return bool
-     */
-    public function isValid($key, $value)
-    {
-        $settings = collect(
-            $this->getRegistered()->get($key, ['allowed' => []])
-        );
-
-        $allowed = $settings->get('allowed');
-
-        if (!is_array($allowed) &&
-            $rule = $this->ruleValidator->isRule($allowed)) {
-            return $this->ruleValidator->validate($rule, $value);
-        }
-
-        return in_array($value, $allowed, true);
     }
 
     /**
@@ -181,32 +148,6 @@ class Settings
     {
         return $this->getRegistered()->map(function ($value) {
             return $value['default'];
-        });
-    }
-
-    /**
-     * Get the allowed settings for key.
-     *
-     * @param string $key
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllowed($key)
-    {
-        if ($this->isRegistered($key)) {
-            return collect($this->getRegistered()[$key]['allowed']);
-        }
-    }
-
-    /**
-     * Get all allowed values for settings.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function allAllowed()
-    {
-        return $this->getRegistered()->map(function ($value) {
-            return $value['allowed'];
         });
     }
 
@@ -283,8 +224,6 @@ class Settings
      */
     protected function setKeyValue($key, $value)
     {
-        $this->validateKeyValue($key, $value);
-
         if ($this->isDefault($key, $value) && $this->isSaved($key)) {
             return $this->deleteRecord($key);
         } elseif ($this->isDefault($key, $value)) {
@@ -294,21 +233,6 @@ class Settings
         }
 
         return $this->createRecord($key, $value);
-    }
-
-    /**
-     * Throw exception if key/value invalid.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @throws InvaildSettingsValue
-     */
-    protected function validateKeyValue($key, $value)
-    {
-        if (!$this->isValid($key, $value)) {
-            throw InvalidSettingsValue::settingNotAllowed($key);
-        }
     }
 
     /**

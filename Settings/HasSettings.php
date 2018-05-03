@@ -138,20 +138,4 @@ trait HasSettings
 
         return $this->settings()->allDefaults();
     }
-
-    /**
-     * Get all allowed settings or allowed settings for single ke if given.
-     *
-     * @param string $key
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function allowedSetting($key = null)
-    {
-        if (!is_null($key)) {
-            return $this->settings()->getAllowed($key);
-        }
-
-        return $this->settings()->allAllowed();
-    }
 }
