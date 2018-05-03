@@ -14,9 +14,9 @@ class CreatePropertyBagTable extends Migration
     public function up()
     {
         Schema::create('property_bag', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('resource_type')->index();
-            $table->integer('resource_id')->unsigned()->index();
+            $table->unsignedBigInteger('resource_id')->index();
             $table->string('key')->index();
             $table->text('value');
             $table->timestamps();
