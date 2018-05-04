@@ -201,17 +201,21 @@ class Settings
     /**
      * Reset key to default value. Return default value.
      *
-     * @param string $key
+     * @param string|array $key
      *
-     * @return mixed
+     * @return $this
      */
     public function reset($key)
     {
-        $default = $this->getDefault($key);
+        $keys = !is_array($key) ? [$key] : $key;
 
-        $this->set([$key => $default]);
+        foreach ($keys as $key) {
+            $default = $this->getDefault($key);
 
-        return $default;
+            $this->set([$key => $default]);
+        }
+
+        return $this;
     }
 
     /**
@@ -295,13 +299,19 @@ class Settings
     /**
      * Delete a PropertyBag record.
      *
-     * @param string $key
+     * @param string|array $key
      *
-     * @return bool
+     * @return $this
      */
     protected function deleteRecord($key)
     {
-        $this->getByKey($key)->delete();
+        $keys = !is_array($keys) ? [$key] : $key;
+
+        foreach ($keys as $key) {
+            $this->getByKey($key)->delete();
+        }
+
+        return $this;
     }
 
     /**
