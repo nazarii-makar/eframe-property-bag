@@ -2,19 +2,24 @@
 
 namespace EFrame\PropertyBag\Providers;
 
+use EFrame\PropertyBag\Console\PropertyBagTableCommand;
 use Illuminate\Support\ServiceProvider as IlluminateProvider;
 
 class PropertyBagServiceProvider extends IlluminateProvider
 {
     /**
-     * Register any other events for your application.
-     *
-     * @return void
+     * Register the application services
      */
-    public function boot()
+    public function register()
     {
-        $this->publishes([
-            __DIR__.'/Migrations/' => database_path('migrations'),
-        ], 'migrations');
+        $this->registerCommands();
+    }
+
+    /**
+     * Register commands
+     */
+    protected function registerCommands()
+    {
+        $this->commands(PropertyBagTableCommand::class);
     }
 }
