@@ -324,7 +324,6 @@ class Settings
     protected function getByKey($key)
     {
         return $this->propertyBag()
-            ->where('resource_id', $this->resource->id)
             ->where('key', $key)
             ->first();
     }
@@ -360,9 +359,7 @@ class Settings
             return $this->resource->propertyBag;
         }
 
-        return $this->propertyBag()
-            ->where('resource_id', $this->resource->id)
-            ->get();
+        return $this->propertyBag()->get();
     }
 
     /**
