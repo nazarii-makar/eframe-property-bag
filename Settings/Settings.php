@@ -247,6 +247,13 @@ class Settings
         return $this->allSaved()->has($key);
     }
 
+    protected function propertyBagClass()
+    {
+        return method_exists($this->resource, 'propertyBagClass')
+            ? $this->resource->propertyBagClass()
+            : PropertyBag::class;
+    }
+
     /**
      * Create a new PropertyBag record.
      *
@@ -257,8 +264,10 @@ class Settings
      */
     protected function createRecord($key, $value)
     {
+        $class = $this->propertyBagClass();
+
         return $this->propertyBag()->save(
-            new PropertyBag([
+            new $class([
                 'key'   => $key,
                 'value' => $this->valueToJson($value),
             ])
